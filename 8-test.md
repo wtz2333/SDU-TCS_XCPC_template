@@ -113,3 +113,9 @@ $C_n^m = C_{n\bmod p}^{m \bmod p}\cdot C_{\lfloor n/p \rfloor}^{\lfloor m/p \rfl
 设 $m \in \mathbf{N}^{*}$，$g\in \mathbf{Z}$. 若 $(g,m)=1$，且 $\delta_m(g)=\varphi(m)$，则称 $g$ 为模 $m$ 的原根。
 
 即 $g$ 满足 $\delta_m(g) = \left| \mathbf{Z}_m^{*} \right| = \varphi(m)$. 当 $m$ 是质数时，我们有 $g^i \bmod m,\,0 < i < m$​ 的结果互不相同。
+
+**原根判定定理**：
+
+设 $m \ge 3, (g,m)=1$，则 $g$ 是模 $m$ 的原根的充要条件是，对于 $\varphi(m)$ 的每个素因数 $p$，都有 $g^{\frac{\varphi(m)}{p}}\not\equiv 1\pmod m$​。
+
+若一个数 $m$ 有原根，则它原根的个数为 $\varphi(\varphi(m))$​，每一个原根都形如 $g^k$ 的形式，要求满足 $\gcd(k,\varphi(n)) = 1$。
