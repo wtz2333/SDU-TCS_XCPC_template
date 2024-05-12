@@ -119,3 +119,7 @@ $C_n^m = C_{n\bmod p}^{m \bmod p}\cdot C_{\lfloor n/p \rfloor}^{\lfloor m/p \rfl
 设 $m \ge 3, (g,m)=1$，则 $g$ 是模 $m$ 的原根的充要条件是，对于 $\varphi(m)$ 的每个素因数 $p$，都有 $g^{\frac{\varphi(m)}{p}}\not\equiv 1\pmod m$​。
 
 若一个数 $m$ 有原根，则它原根的个数为 $\varphi(\varphi(m))$​，每一个原根都形如 $g^k$ 的形式，要求满足 $\gcd(k,\varphi(n)) = 1$。
+
+**原根存在定理**：
+
+一个数 $m$ 存在原根当且仅当 $m=2,4,p^{\alpha},2p^{\alpha}$，其中 $p$ 为奇素数，$\alpha\in \mathbf{N}^{*}$。
