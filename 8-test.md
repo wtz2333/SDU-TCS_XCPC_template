@@ -110,4 +110,6 @@ $C_n^m = C_{n\bmod p}^{m \bmod p}\cdot C_{\lfloor n/p \rfloor}^{\lfloor m/p \rfl
 ### 原根
 
 
-设 $m \in \mathbf{N}^{*}$，
+设 $m \in \mathbf{N}^{*}$，$g\in \mathbf{Z}$. 若 $(g,m)=1$，且 $\delta_m(g)=\varphi(m)$，则称 $g$ 为模 $m$ 的原根。
+
+即 $g$ 满足 $\delta_m(g) = \left| \mathbf{Z}_m^{*} \right| = \varphi(m)$. 当 $m$ 是质数时，我们有 $g^i \bmod m,\,0 < i < m$​ 的结果互不相同。
