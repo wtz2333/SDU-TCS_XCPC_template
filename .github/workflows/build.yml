@@ -10,6 +10,7 @@ on:
 env:
   python_version: "3.9"
   pandoc_version: "3.1.2"
+  DEBIAN_FRONTEND: noninteractive
 
 jobs:
   build:
@@ -18,26 +19,42 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      # 释放磁盘空间，防止 texlive 爆盘
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/lib/android
+          df -h
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ env.python_version }}
 
-      - name: Install Pandoc
+      - name: Install Pandoc and minimal TeX
         run: |
-          mkdir -p /tmp/pandoc
-          cd /tmp/pandoc
-          python -m pip --no-cache-dir install setuptools wheel
-          python -m pip --no-cache-dir install pandocfilters Pygments
-          sudo apt install -y texlive texlive-xetex texlive-lang-chinese latexmk wget
+          sudo apt-get clean
+          sudo apt-get update -y
+          sudo apt-get install -y --no-install-recommends \
+            texlive-xetex \
+            texlive-latex-recommended \
+            texlive-latex-extra \
+            texlive-fonts-recommended \
+            texlive-lang-chinese \
+            fonts-noto-cjk \
+            latexmk \
+            wget
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install pandocfilters Pygments
           wget -q "https://github.com/jgm/pandoc/releases/download/${{ env.pandoc_version }}/pandoc-${{ env.pandoc_version }}-1-amd64.deb"
           sudo dpkg -i pandoc-${{ env.pandoc_version }}-1-amd64.deb
-          rm -rf *.deb
+          rm -f pandoc-${{ env.pandoc_version }}-1-amd64.deb
 
       - name: Install Fonts
         run: |
-          mkdir -p /tmp/adodefont
-          cd /tmp/adodefont
+          mkdir -p /tmp/adobe-fonts
+          cd /tmp/adobe-fonts
           wget -q -O source-code-pro.zip https://github.com/adobe-fonts/source-code-pro/archive/2.030R-ro/1.050R-it.zip
           wget -q -O source-han-serif.zip https://github.com/adobe-fonts/source-han-serif/archive/1.001R.zip
           wget -q -O source-han-sans.zip https://github.com/adobe-fonts/source-han-sans/archive/2.001R.zip
@@ -45,18 +62,18 @@ jobs:
           unzip -q source-han-serif.zip -d source-han-serif
           unzip -q source-han-sans.zip -d source-han-sans
           mkdir -p ~/.fonts
-          cp -v source-code-pro/*/OTF/*.otf ~/.fonts/
-          cp -v source-han-serif/*/SubsetOTF/*/*.otf ~/.fonts/
-          cp -v source-han-sans/*/SubsetOTF/*/*.otf ~/.fonts/
+          cp -v source-code-pro/*/OTF/*.otf ~/.fonts/ || true
+          cp -v source-han-serif/*/SubsetOTF/*/*.otf ~/.fonts/ || true
+          cp -v source-han-sans/*/SubsetOTF/*/*.otf ~/.fonts/ || true
           fc-cache -f
-          rm -rf source-code-pro{,.zip} source-han-serif{,.zip} source-han-sans{,.zip}
+          rm -rf /tmp/adobe-fonts
 
       - name: Generate PDF
         run: |
           mkdir -p ~/.pandoc/templates
           cp pandoc/algo.latex ~/.pandoc/templates/
           bash pandoc/gen.sh
-          mkdir build
+          mkdir -p build
           cp template.pdf build/template.pdf
 
       - name: Release
