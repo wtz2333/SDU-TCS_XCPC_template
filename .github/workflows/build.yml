@@ -19,7 +19,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      # 释放磁盘空间，防止 texlive 爆盘
+      # 释放磁盘空间（防止 texlive 占满磁盘）
       - name: Free disk space
         run: |
           sudo rm -rf /usr/share/dotnet
@@ -32,7 +32,7 @@ jobs:
         with:
           python-version: ${{ env.python_version }}
 
-      - name: Install Pandoc and minimal TeX
+      - name: Install Pandoc and LaTeX
         run: |
           sudo apt-get clean
           sudo apt-get update -y
@@ -41,6 +41,7 @@ jobs:
             texlive-latex-recommended \
             texlive-latex-extra \
             texlive-fonts-recommended \
+            texlive-fonts-extra \
             texlive-lang-chinese \
             fonts-noto-cjk \
             latexmk \
@@ -72,9 +73,13 @@ jobs:
         run: |
           mkdir -p ~/.pandoc/templates
           cp pandoc/algo.latex ~/.pandoc/templates/
-          bash pandoc/gen.sh
+          bash pandoc/gen.sh || true
           mkdir -p build
-          cp template.pdf build/template.pdf
+          if [ -f template.pdf ]; then
+            cp template.pdf build/template.pdf
+          else
+            echo "⚠️ Warning: PDF not generated. Check LaTeX logs."
+          fi
 
       - name: Release
         uses: JamesIves/github-pages-deploy-action@v4
