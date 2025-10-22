@@ -73,13 +73,9 @@ jobs:
         run: |
           mkdir -p ~/.pandoc/templates
           cp pandoc/algo.latex ~/.pandoc/templates/
-          bash pandoc/gen.sh || true
-          mkdir -p build
-          if [ -f template.pdf ]; then
-            cp template.pdf build/template.pdf
-          else
-            echo "⚠️ Warning: PDF not generated. Check LaTeX logs."
-          fi
+          bash pandoc/gen.sh
+          mkdir build
+          cp template.pdf build/template.pdf
 
       - name: Release
         uses: JamesIves/github-pages-deploy-action@v4
